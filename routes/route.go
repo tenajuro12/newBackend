@@ -8,9 +8,11 @@ import (
 )
 
 func Setup(app *fiber.App) {
+	// Add this line to setup CORS for your application
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "http://localhost:3000", // This is your frontend's address
-		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowOrigins:     "http://localhost:3000", // This is your frontend's address
+		AllowHeaders:     "Origin, Content-Type, Accept",
+		AllowCredentials: true,
 	}))
 
 	app.Post("/api/register", controller.Register)
