@@ -3,16 +3,17 @@ package routes
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/kingztech2019/blogbackend/controller"
-	"github.com/kingztech2019/blogbackend/middleware"
+	"github.com/tenajuro12/blogbackend/controller"
+	"github.com/tenajuro12/blogbackend/middleware"
 )
 
 func Setup(app *fiber.App) {
-	// Add this line to setup CORS for your application
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://localhost:3000", // This is your frontend's address
-		AllowHeaders:     "Origin, Content-Type, Accept",
+		AllowOrigins:     "http://localhost:3000",
+		AllowHeaders:     "Origin, Content-Type, Accept, Authorization", // Include 'Authorization' header
+		AllowMethods:     "GET, POST, PUT, DELETE",
 		AllowCredentials: true,
+		ExposeHeaders:    "Authorization", // Expose 'Authorization' header
 	}))
 
 	app.Post("/api/register", controller.Register)

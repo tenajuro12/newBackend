@@ -1,4 +1,4 @@
-module github.com/kingztech2019/blogbackend
+module github.com/tenajuro12/blogbackend
 
 // +heroku goVersion go1.17
 go 1.17
