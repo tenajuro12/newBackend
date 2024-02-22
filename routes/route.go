@@ -4,11 +4,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/kingztech2019/blogbackend/controller"
-	"github.com/kingztech2019/blogbackend/middleware"
 )
 
 func Setup(app *fiber.App) {
-	// Add this line to setup CORS for your application
 	app.Use(cors.New(cors.Config{
 		AllowOrigins:     "http://localhost:3000", // This is your frontend's address
 		AllowHeaders:     "Origin, Content-Type, Accept",
@@ -18,7 +16,6 @@ func Setup(app *fiber.App) {
 	app.Post("/api/register", controller.Register)
 	app.Post("/api/login", controller.Login)
 
-	app.Use(middleware.IsAuthenticate)
 	app.Post("/api/post", controller.CreatePost)
 	app.Get("/api/allpost", controller.AllPost)
 	app.Get("/api/allpost/:id", controller.DetailPost)
