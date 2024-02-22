@@ -4,7 +4,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/tenajuro12/blogbackend/controller"
-	"github.com/tenajuro12/blogbackend/middleware"
 )
 
 func Setup(app *fiber.App) {
@@ -19,7 +18,6 @@ func Setup(app *fiber.App) {
 	app.Post("/api/register", controller.Register)
 	app.Post("/api/login", controller.Login)
 
-	app.Use(middleware.IsAuthenticate)
 	app.Post("/api/post", controller.CreatePost)
 	app.Get("/api/allpost", controller.AllPost)
 	app.Get("/api/allpost/:id", controller.DetailPost)
