@@ -7,16 +7,20 @@ import (
 )
 
 func Setup(app *fiber.App) {
+	// Enable CORS for all routes
 	app.Use(func(c *fiber.Ctx) error {
-		c.Set("Access-Control-Allow-Origin", "*")
+		origin := c.Get("Origin")
+		c.Set("Access-Control-Allow-Origin", origin)
 		c.Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
 		c.Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 		if c.Method() == "OPTIONS" {
+			c.Set("Access-Control-Allow-Credentials", "true")
 			return c.SendStatus(fiber.StatusOK)
 		}
 		return c.Next()
 	})
 
+	// Define your routes
 	app.Post("/api/register", controller.Register)
 	app.Post("/api/login", controller.Login)
 
