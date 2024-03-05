@@ -99,7 +99,7 @@ func DeletePost(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{
-		"message": "post deleted Succesfully",
+		"message": "post deleted successfully",
 	})
 
 }

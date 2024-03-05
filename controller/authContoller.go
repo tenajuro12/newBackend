@@ -27,7 +27,7 @@ func Register(c *fiber.Ctx) error {
 	if err := c.BodyParser(&data); err != nil {
 		fmt.Println("Unable to parse body")
 	}
-	//Check if password is less than 6 characters
+
 	if len(data["password"].(string)) <= 6 {
 		c.Status(400)
 		return c.JSON(fiber.Map{
@@ -42,7 +42,7 @@ func Register(c *fiber.Ctx) error {
 		})
 
 	}
-	//Check if email already exist in database
+
 	database.DB.Where("email=?", strings.TrimSpace(data["email"].(string))).First(&userData)
 	if userData.Id != 0 {
 		c.Status(400)
@@ -65,7 +65,7 @@ func Register(c *fiber.Ctx) error {
 	c.Status(200)
 	return c.JSON(fiber.Map{
 		"user":    user,
-		"message": "Account created successfullys",
+		"message": "Account created successfully",
 	})
 
 }
