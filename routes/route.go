@@ -4,12 +4,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/tenajuro12/blogbackend/controller"
 	"github.com/tenajuro12/blogbackend/middleware"
-	"github.com/tenajuro12/blogbackend/renders"
 )
 
 func Setup(app *fiber.App) {
+	app.Get("/register", controller.RenderRegisterPage)
 	app.Post("/api/register", controller.Register)
 
+	app.Get("/login", controller.RenderLoginPage)
 	app.Post("/api/login", controller.Login)
 	app.Use(middleware.IsAuthenticate)
 
