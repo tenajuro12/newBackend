@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Blog Post</title>
+</head>
+<body>
+    <h1>Update Blog Post</h1>
+    <form action="/api/updatepost/{{.Id}}" method="POST">
+        <input type="text" name="title" placeholder="Enter title" value="{{.Title}}"><br>
+        <textarea name="content" placeholder="Enter content">{{.Content}}</textarea><br>
+        <input type="submit" value="Update Post">
+    </form>
+</body>
+</html>

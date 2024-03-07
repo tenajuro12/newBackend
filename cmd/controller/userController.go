@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/gofiber/fiber/v2"
-	"github.com/tenajuro12/blogbackend/database"
-	"github.com/tenajuro12/blogbackend/models"
-	"github.com/tenajuro12/blogbackend/util"
+	"github.com/tenajuro12/newBackend/pkg/database"
+	models2 "github.com/tenajuro12/newBackend/pkg/models"
+	"github.com/tenajuro12/newBackend/pkg/util"
 	"gorm.io/gorm"
 	"strconv"
 )
@@ -24,7 +24,7 @@ func DeleteUser(c *fiber.Ctx) error {
 	}
 
 	// Check if the user exists
-	var user models.User
+	var user models2.User
 	if err := database.DB.Where("id = ?", userID).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.Status(fiber.StatusNotFound)
@@ -37,7 +37,7 @@ func DeleteUser(c *fiber.Ctx) error {
 			"message": "Internal server error",
 		})
 	}
-	if err := database.DB.Where("user_id = ?", userID).Delete(&models.Blog{}).Error; err != nil {
+	if err := database.DB.Where("user_id = ?", userID).Delete(&models2.Blog{}).Error; err != nil {
 		return c.JSON(fiber.Map{
 			"message": "Failed to delete associated blogs",
 		})
@@ -68,7 +68,7 @@ func UpdateUser(c *fiber.Ctx) error {
 	}
 
 	// Parse request body to extract updated user data
-	var updatedUser models.User
+	var updatedUser models2.User
 	if err := c.BodyParser(&updatedUser); err != nil {
 		fmt.Println("Unable to parse user body")
 		c.Status(fiber.StatusBadRequest)
@@ -78,7 +78,7 @@ func UpdateUser(c *fiber.Ctx) error {
 	}
 
 	// Check if the user exists
-	var user models.User
+	var user models2.User
 	if err := database.DB.Where("id = ?", userID).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.Status(fiber.StatusNotFound)
@@ -124,7 +124,7 @@ func GetUserInfo(c *fiber.Ctx) error {
 	}
 
 	// Query the database for user information
-	var user models.User
+	var user models2.User
 	if err := database.DB.Where("id = ?", userID).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.Status(fiber.StatusNotFound)
@@ -179,7 +179,7 @@ func FollowUser(c *fiber.Ctx) error {
 		})
 	}
 	// Check if the followed user exists
-	var followedUser models.User
+	var followedUser models2.User
 	if err := database.DB.First(&followedUser, followedUserID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.Status(fiber.StatusNotFound)
@@ -194,7 +194,7 @@ func FollowUser(c *fiber.Ctx) error {
 	}
 
 	// Check if the follow relationship already exists
-	var followRelationship models.Follow
+	var followRelationship models2.Follow
 	if err := database.DB.Where("follower_id = ? AND followed_user_id = ?", followerID, followedUserID).First(&followRelationship).Error; err == nil {
 		c.Status(fiber.StatusBadRequest)
 		return c.JSON(fiber.Map{
@@ -203,7 +203,7 @@ func FollowUser(c *fiber.Ctx) error {
 	}
 
 	// Create a new follow relationship
-	follow := models.Follow{
+	follow := models2.Follow{
 		FollowerID:     uint(followerID),
 		FollowedUserID: uint(followedUserID),
 	}
@@ -241,7 +241,7 @@ func UnfollowUser(c *fiber.Ctx) error {
 	}
 
 	// Check if the follow relationship exists
-	var followRelationship models.Follow
+	var followRelationship models2.Follow
 	if err := database.DB.Where("follower_id = ? AND followed_user_id = ?", followerID, followedUserID).First(&followRelationship).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.Status(fiber.StatusNotFound)
@@ -283,7 +283,7 @@ func GetPostsFromFollowedUsers(c *fiber.Ctx) error {
 	}
 
 	// Get list of users the current user is following
-	var followedUsers []models.Follow
+	var followedUsers []models2.Follow
 	if err := database.DB.Where("follower_id = ?", userID).Find(&followedUsers).Error; err != nil {
 		c.Status(fiber.StatusInternalServerError)
 		return c.JSON(fiber.Map{
@@ -298,7 +298,7 @@ func GetPostsFromFollowedUsers(c *fiber.Ctx) error {
 	}
 
 	// Retrieve posts from followed users
-	var blogs []models.Blog
+	var blogs []models2.Blog
 	if err := database.DB.Where("user_id IN (?)", followedUserIDs).Find(&blogs).Error; err != nil {
 		c.Status(fiber.StatusInternalServerError)
 		return c.JSON(fiber.Map{

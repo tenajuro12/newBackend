@@ -3,20 +3,18 @@ package controller
 import (
 	"errors"
 	"fmt"
+	"github.com/tenajuro12/newBackend/pkg/database"
+	models2 "github.com/tenajuro12/newBackend/pkg/models"
+	"github.com/tenajuro12/newBackend/pkg/util"
 	"strconv"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/tenajuro12/blogbackend/database"
-	"github.com/tenajuro12/blogbackend/models"
-	"github.com/tenajuro12/blogbackend/util"
 	"gorm.io/gorm"
 )
 
-// CreateComment creates a new comment for a blog post.
 func CreateComment(c *fiber.Ctx) error {
-	// Parse request body to extract comment data
-	var commentData models.Comment
+	var commentData models2.Comment
 	if err := c.BodyParser(&commentData); err != nil {
 		fmt.Println("Unable to parse comment body")
 		c.Status(fiber.StatusBadRequest)
@@ -25,7 +23,6 @@ func CreateComment(c *fiber.Ctx) error {
 		})
 	}
 
-	// Extract user ID from JWT cookie
 	cookie := c.Cookies("jwt")
 	userID, err := util.Parsejwt(cookie)
 	if err != nil {
@@ -35,7 +32,6 @@ func CreateComment(c *fiber.Ctx) error {
 		})
 	}
 
-	// Parse blog post ID from URL parameter
 	postID, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		c.Status(fiber.StatusBadRequest)
@@ -44,8 +40,7 @@ func CreateComment(c *fiber.Ctx) error {
 		})
 	}
 
-	// Check if the blog post exists
-	var blogPost models.Blog
+	var blogPost models2.Blog
 	if err := database.DB.Where("id = ?", postID).First(&blogPost).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.Status(fiber.StatusNotFound)
@@ -59,15 +54,13 @@ func CreateComment(c *fiber.Ctx) error {
 		})
 	}
 
-	// Create new comment object
-	comment := models.Comment{
+	comment := models2.Comment{
 		UserID:   userID,
 		PostID:   uint(postID),
 		Content:  commentData.Content,
 		DateTime: time.Now(),
 	}
 
-	// Save comment to database
 	if err := database.DB.Create(&comment).Error; err != nil {
 		c.Status(fiber.StatusInternalServerError)
 		return c.JSON(fiber.Map{
@@ -81,9 +74,7 @@ func CreateComment(c *fiber.Ctx) error {
 	})
 }
 
-// UpdateComment updates an existing comment.
 func UpdateComment(c *fiber.Ctx) error {
-	// Parse comment ID from URL parameter
 	commentID, err := strconv.Atoi(c.Params("commentID"))
 	if err != nil {
 		c.Status(fiber.StatusBadRequest)
@@ -92,8 +83,7 @@ func UpdateComment(c *fiber.Ctx) error {
 		})
 	}
 
-	// Parse request body to extract updated comment data
-	var updatedComment models.Comment
+	var updatedComment models2.Comment
 	if err := c.BodyParser(&updatedComment); err != nil {
 		fmt.Println("Unable to parse comment body")
 		c.Status(fiber.StatusBadRequest)
@@ -102,8 +92,7 @@ func UpdateComment(c *fiber.Ctx) error {
 		})
 	}
 
-	// Check if the comment exists
-	var comment models.Comment
+	var comment models2.Comment
 	if err := database.DB.Where("id = ?", commentID).First(&comment).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.Status(fiber.StatusNotFound)
@@ -117,10 +106,8 @@ func UpdateComment(c *fiber.Ctx) error {
 		})
 	}
 
-	// Update comment content
 	comment.Content = updatedComment.Content
 
-	// Save updated comment to database
 	if err := database.DB.Save(&comment).Error; err != nil {
 		c.Status(fiber.StatusInternalServerError)
 		return c.JSON(fiber.Map{
@@ -134,9 +121,7 @@ func UpdateComment(c *fiber.Ctx) error {
 	})
 }
 
-// DeleteComment deletes an existing comment.
 func DeleteComment(c *fiber.Ctx) error {
-	// Parse comment ID from URL parameter
 	commentID, err := strconv.Atoi(c.Params("commentID"))
 	if err != nil {
 		c.Status(fiber.StatusBadRequest)
@@ -145,8 +130,7 @@ func DeleteComment(c *fiber.Ctx) error {
 		})
 	}
 
-	// Check if the comment exists
-	var comment models.Comment
+	var comment models2.Comment
 	if err := database.DB.Where("id = ?", commentID).First(&comment).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.Status(fiber.StatusNotFound)
@@ -160,7 +144,6 @@ func DeleteComment(c *fiber.Ctx) error {
 		})
 	}
 
-	// Delete comment from database
 	if err := database.DB.Delete(&comment).Error; err != nil {
 		c.Status(fiber.StatusInternalServerError)
 		return c.JSON(fiber.Map{
@@ -174,7 +157,6 @@ func DeleteComment(c *fiber.Ctx) error {
 }
 
 func ReadComments(c *fiber.Ctx) error {
-	// Parse blog post ID from URL parameter
 	postID, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		c.Status(fiber.StatusBadRequest)
@@ -183,8 +165,7 @@ func ReadComments(c *fiber.Ctx) error {
 		})
 	}
 
-	// Check if the blog post exists
-	var blogPost models.Blog
+	var blogPost models2.Blog
 	if err := database.DB.Where("id = ?", postID).First(&blogPost).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			c.Status(fiber.StatusNotFound)
@@ -198,8 +179,7 @@ func ReadComments(c *fiber.Ctx) error {
 		})
 	}
 
-	// Retrieve comments associated with the blog post
-	var comments []models.Comment
+	var comments []models2.Comment
 	if err := database.DB.Where("post_id = ?", postID).Find(&comments).Error; err != nil {
 		c.Status(fiber.StatusInternalServerError)
 		return c.JSON(fiber.Map{

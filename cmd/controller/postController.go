@@ -3,32 +3,45 @@ package controller
 import (
 	"errors"
 	"fmt"
+	"github.com/tenajuro12/newBackend/pkg/database"
+	"github.com/tenajuro12/newBackend/pkg/models"
+	"github.com/tenajuro12/newBackend/pkg/util"
 	"math"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 
-	"github.com/tenajuro12/blogbackend/database"
-	"github.com/tenajuro12/blogbackend/models"
-	"github.com/tenajuro12/blogbackend/util"
 	"gorm.io/gorm"
 )
 
 func CreatePost(c *fiber.Ctx) error {
+	// Retrieve the user ID from the session
+	userID := c.Locals("userID").(string) // Assuming userID is stored as a string in the session
+
+	// Parse the request body into a models.Blog struct
 	var blogpost models.Blog
 	if err := c.BodyParser(&blogpost); err != nil {
 		fmt.Println("Unable to parse body")
-	}
-	if err := database.DB.Create(&blogpost).Error; err != nil {
-		c.Status(400)
-		return c.JSON(fiber.Map{
+		return c.Status(400).JSON(fiber.Map{
 			"message": "Invalid payload",
 		})
 	}
-	return c.JSON(fiber.Map{
-		"message": "Congratulation!, Your post is live",
-	})
 
+	// Set the UserID field of the blogpost with the retrieved user ID
+	blogpost.UserID = userID
+
+	// Create the blog post in the database
+	if err := database.DB.Create(&blogpost).Error; err != nil {
+		fmt.Println("Error creating post:", err)
+		return c.Status(500).JSON(fiber.Map{
+			"message": "Error creating post",
+		})
+	}
+
+	// Return a success response if the blog post was created successfully
+	return c.JSON(fiber.Map{
+		"message": "Congratulations! Your post is live",
+	})
 }
 
 func AllPost(c *fiber.Ctx) error {
@@ -73,7 +86,6 @@ func UpdatePost(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"message": "post updated successfully",
 	})
-
 }
 
 func UniquePost(c *fiber.Ctx) error {

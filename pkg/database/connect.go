@@ -1,11 +1,11 @@
 package database
 
 import (
+	models2 "github.com/tenajuro12/newBackend/pkg/models"
 	"log"
 	"os"
 
 	"github.com/joho/godotenv"
-	"github.com/tenajuro12/blogbackend/models"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -26,10 +26,10 @@ func Connect() {
 	}
 	DB = database
 	database.AutoMigrate(
-		&models.User{},
-		&models.Blog{},
-		&models.Comment{},
-		&models.Follow{},
+		&models2.User{},
+		&models2.Blog{},
+		&models2.Comment{},
+		&models2.Follow{},
 	)
 
 }

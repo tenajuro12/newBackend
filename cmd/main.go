@@ -1,13 +1,13 @@
 package main
 
 import (
+	"github.com/tenajuro12/newBackend/cmd/routes"
+	"github.com/tenajuro12/newBackend/pkg/database"
 	"log"
 	"os"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
-	"github.com/tenajuro12/blogbackend/database"
-	"github.com/tenajuro12/blogbackend/routes"
 )
 
 func main() {
