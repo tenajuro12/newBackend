@@ -2,8 +2,8 @@ package routes
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/kingztech2019/blogbackend/controller"
-	"github.com/kingztech2019/blogbackend/middleware"
+	"github.com/tenajuro12/newBackend/controller"
+	"github.com/tenajuro12/newBackend/middleware"
 )
 
 func Setup(app *fiber.App) {

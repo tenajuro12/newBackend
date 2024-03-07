@@ -11,9 +11,9 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gofiber/fiber/v2"
 
-	"github.com/kingztech2019/blogbackend/database"
-	"github.com/kingztech2019/blogbackend/models"
-	"github.com/kingztech2019/blogbackend/util"
+	"github.com/tenajuro12/newBackend/database"
+	"github.com/tenajuro12/newBackend/models"
+	"github.com/tenajuro12/newBackend/util"
 )
 
 func validateEmail(email string) bool{

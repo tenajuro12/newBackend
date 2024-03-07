@@ -1,6 +1,6 @@
-module github.com/kingztech2019/blogbackend
+module github.com/tenajuro12/newBackend
 
-// +heroku goVersion go1.17
+// для запуска через хероку
 go 1.17
 
 require (

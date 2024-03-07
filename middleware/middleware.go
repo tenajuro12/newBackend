@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/kingztech2019/blogbackend/util"
+	"github.com/tenajuro12/newBackend/util"
 )
 
 
